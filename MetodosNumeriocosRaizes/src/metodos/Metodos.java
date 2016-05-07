@@ -39,6 +39,11 @@ public class Metodos {
 			exibir.setText(text);
 	}
 
+	private void new_line() {
+		if (exibir != null)
+			exibir.newline();
+	}
+	
 	public double bissecao(double a, double b) {
 		double x0,x1,ea;
 		x1 = a; 
@@ -52,6 +57,13 @@ public class Metodos {
 			}else{
 				a = x1;
 			}
+			new_line();
+			putInfo("interação "+i);
+			putInfo(" a= "+a);
+			putInfo(" b= "+b);
+			putInfo(" x1= "+x1);
+			putInfo(" ea "+ea);
+
 			if(ea > tol){
 				break;
 			}
@@ -59,8 +71,43 @@ public class Metodos {
 		return x1;
 	}
 
-	public void falsa_posicao() {
-
+	public double falsa_posicao(double a, double b) {
+		double x0,x1, fl, fu, fx, ea;
+		ea = 100;
+		fl = funcao.g(a);
+		fu = funcao.g(b);
+		if(fl < fu){
+			x1 = a;
+		}else{
+			x1 = b;
+		}
+		putInfo("Falsa posição:");
+		for (int i = 0; i < max_interacao; i++) {
+			x0 = x1;
+			x1 = b + (fu*(a-b))/(fu-fl);
+			fx = funcao.g(x1);
+			if(x1 != 0){
+				ea = Math.abs((x1-x0)/x1)*100;
+			}
+			if(fl < fu){
+				a = x1;
+				fl = fx;
+			}else{
+				b = x1;
+				fu = fx;
+			}			
+			new_line();
+			putInfo("interação "+i);
+			putInfo(" a= "+a);
+			putInfo(" b= "+b);
+			putInfo(" x1= "+x1);
+			putInfo(" ea "+ea);
+			if(ea > tol){
+				break;
+			}
+		}
+		
+		return x1;
 	}
 
 	public void ponto_fixo() {
