@@ -63,8 +63,9 @@ public class Metodos {
 			putInfo(" b= "+b);
 			putInfo(" x1= "+x1);
 			putInfo(" ea "+ea);
+			putInfo(" f(x1)= "+funcao.f(x1));
 
-			if(ea > tol){
+			if(ea < tol){
 				break;
 			}
 		}
@@ -74,8 +75,8 @@ public class Metodos {
 	public double falsa_posicao(double a, double b) {
 		double x0,x1, fl, fu, fx, ea;
 		ea = 100;
-		fl = funcao.g(a);
-		fu = funcao.g(b);
+		fl = funcao.f(a);
+		fu = funcao.f(b);
 		if(fl < fu){
 			x1 = a;
 		}else{
@@ -85,7 +86,7 @@ public class Metodos {
 		for (int i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = b + (fu*(a-b))/(fu-fl);
-			fx = funcao.g(x1);
+			fx = funcao.f(x1);
 			if(x1 != 0){
 				ea = Math.abs((x1-x0)/x1)*100;
 			}
@@ -102,7 +103,8 @@ public class Metodos {
 			putInfo(" b= "+b);
 			putInfo(" x1= "+x1);
 			putInfo(" ea "+ea);
-			if(ea > tol){
+			putInfo(" f(x1)= "+funcao.f(x1));
+			if(ea < tol){
 				break;
 			}
 		}
@@ -110,8 +112,28 @@ public class Metodos {
 		return x1;
 	}
 
-	public void ponto_fixo() {
+	public void ponto_fixo(double xa) {
+		double x1, x0, ea;
+		x1 = xa;
+		ea = 100;
+		putInfo("Ponto fixo");
+		for (int i = 0; i < max_interacao; i++) {
+			x0 = x1;
+			x1 = funcao.g(x0);
+			if(x1 != 0){
+				ea = Math.abs((x1-x0)/x1)*100;
+			}
 
+			new_line();
+			putInfo("interação "+i);
+			putInfo(" a= "+x0);
+			putInfo(" x1= "+x1);
+			putInfo(" ea "+ea);
+			putInfo(" f(x1)= "+funcao.f(x1));
+			if(ea < tol){
+				break;
+			}
+		}
 	}
 
 	public void nweton_raphson() {
