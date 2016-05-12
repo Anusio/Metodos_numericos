@@ -46,15 +46,21 @@ public class Metodos {
 
 	public double bissecao(double a, double b) {
 		double x0, x1, ea;
+		//extra dany
+		double fc;
 		x1 = a;
+		new_line();
+		new_line();
 		putInfo("Metodo Bisecção:");
 		for (int i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = (a + b) / 2;
 			ea = Math.abs((x1 - x0) / x1) * 100;
-			if (funcao.f(a) * funcao.f(b) < 0) {
+			fc = funcao.f(x1);
+			//extra tbm
+			if (funcao.f(a) * fc < 0) {
 				b = x1;
-			} else {
+			} else if(funcao.f(b) * fc < 0){
 				a = x1;
 			}
 			new_line();
@@ -65,7 +71,7 @@ public class Metodos {
 			putInfo(" ea " + ea);
 			putInfo(" f(x1)= " + funcao.f(x1));
 
-			if (ea < tol) {
+			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
 				break;
 			}
 		}
@@ -82,6 +88,8 @@ public class Metodos {
 		} else {
 			x1 = b;
 		}
+		new_line();
+		new_line();
 		putInfo("Falsa posição:");
 		for (int i = 0; i < max_interacao; i++) {
 			x0 = x1;
@@ -104,7 +112,7 @@ public class Metodos {
 			putInfo(" x1= " + x1);
 			putInfo(" ea " + ea);
 			putInfo(" f(x1)= " + funcao.f(x1));
-			if (ea < tol) {
+			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
 				break;
 			}
 		}
@@ -116,6 +124,8 @@ public class Metodos {
 		double x1, x0, ea;
 		x1 = xa;
 		ea = 100;
+		new_line();
+		new_line();
 		putInfo("Ponto fixo");
 		for (int i = 0; i < max_interacao; i++) {
 			x0 = x1;
@@ -130,7 +140,8 @@ public class Metodos {
 			putInfo(" x1= " + x1);
 			putInfo(" ea " + ea);
 			putInfo(" f(x1)= " + funcao.f(x1));
-			if (ea < tol) {
+			//quase certeza que ea <= tol ou while(ea>tol), da no mesmo, nao funciona
+			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
 				break;
 			}
 		}
@@ -141,6 +152,8 @@ public class Metodos {
 		double ea = 100;
 		double x0, x1;
 		x1 = xa;
+		new_line();
+		new_line();
 		putInfo("Nweton raphson");
 		for (int i = 0; i < max_interacao; i++) {
 			x0 = x1;
@@ -155,7 +168,7 @@ public class Metodos {
 			putInfo(" x1= " + x1);
 			putInfo(" ea " + ea);
 			putInfo(" f(x1)= " + funcao.f(x1));
-			if (ea < tol) {
+			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
 				break;
 			}
 		}
@@ -163,20 +176,22 @@ public class Metodos {
 	}
 
 	public double secante(double xa, double xb) {
-		double x1, x0, f0, f1;
+		double x1, x0, fa, fb;
 		double ea = 100;
 		x1 = xa;
+		new_line();
+		new_line();
 		putInfo("Secante");
 		for (int i = 0; i < max_interacao; i++) {
-			f0 = funcao.f(xa);
-			f1 = funcao.f(xb);
+			fa = funcao.f(xa);
+			fb = funcao.f(xb);
+			//nao tem x0
 			x0 = x1;
-			x1 = xa - f1*(xa-xb)/(f0-f1);
+			//rescrever a funcao funcionou
+			x1 = xb - (fb*(xb-xa)/(fb-fa));
 			if(x1 != 0){
 				ea = Math.abs((x1-x0)/x1)*100;
 			}
-			xa = xb;
-			xb = x1;
 			
 			new_line();
 			putInfo("interação " + i);
@@ -186,9 +201,11 @@ public class Metodos {
 			putInfo(" xb= " + xb);
 			putInfo(" ea " + ea);
 			putInfo(" f(x1)= " + funcao.f(x1));
-			if(ea <= tol){
+			if(ea <= tol || Math.abs(funcao.f(x1))< tol){
 				break;
 			}
+			xb = xa;
+			xa = x1;
 		}
 		return x1;
 	}
