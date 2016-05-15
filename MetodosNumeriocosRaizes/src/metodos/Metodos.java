@@ -3,6 +3,8 @@
  */
 package metodos;
 
+import java.text.DecimalFormat;
+
 public class Metodos {
 	private Funcao funcao;
 	private Exibir exibir;
@@ -39,46 +41,69 @@ public class Metodos {
 			exibir.setText(text);
 	}
 
+	private void putInfo(double a) {
+		DecimalFormat df = new DecimalFormat("    00.00000000");
+		if (exibir != null)
+			exibir.setText(df.format(a) + "|");
+	}
+
+	private void putInfo(int a) {
+		if (exibir != null)
+			exibir.setText(String.format("%8d |", a));
+	}
+
 	private void new_line() {
 		if (exibir != null)
 			exibir.newline();
 	}
 
-	public double bissecao(double a, double b) {
+	public Resposta bissecao(double a, double b) {
+
 		double x0, x1, ea;
-		//extra dany
+		ea = 100;
+		// extra dany
 		double fc;
 		x1 = a;
 		new_line();
 		new_line();
 		putInfo("Metodo Bisecção:");
-		for (int i = 0; i < max_interacao; i++) {
+		new_line();
+		if (funcao.f(a) * funcao.f(b) > 0) {
+			putInfo("Nao coverge, intervalo mal definido");
+			return  null;
+		}
+		int i;
+		putInfo("interação|      a       |      b       |      x1      |      ea     |     f(x1)   |");
+		for (i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = (a + b) / 2;
 			ea = Math.abs((x1 - x0) / x1) * 100;
 			fc = funcao.f(x1);
-			//extra tbm
+			// extra tbm
 			if (funcao.f(a) * fc < 0) {
 				b = x1;
-			} else if(funcao.f(b) * fc < 0){
+			} else if (funcao.f(b) * fc < 0) {
 				a = x1;
+			} else {
+				putInfo("Erro Nao coverge a=" + a + " b=" + b);
+				return  null;
 			}
 			new_line();
-			putInfo("interação " + i);
-			putInfo(" a= " + a);
-			putInfo(" b= " + b);
-			putInfo(" x1= " + x1);
-			putInfo(" ea " + ea);
-			putInfo(" f(x1)= " + funcao.f(x1));
+			putInfo(i);
+			putInfo(a);
+			putInfo(b);
+			putInfo(x1);
+			putInfo(ea);
+			putInfo(funcao.f(x1));
 
-			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
+			if (Math.abs(funcao.f(x1)) < tol) {
 				break;
 			}
 		}
-		return x1;
+		return new Resposta(x1, ea, i);
 	}
 
-	public double falsa_posicao(double a, double b) {
+	public Resposta falsa_posicao(double a, double b) {
 		double x0, x1, fl, fu, fx, ea;
 		ea = 100;
 		fl = funcao.f(a);
@@ -91,7 +116,14 @@ public class Metodos {
 		new_line();
 		new_line();
 		putInfo("Falsa posição:");
-		for (int i = 0; i < max_interacao; i++) {
+		new_line();
+		if (funcao.f(a) * funcao.f(b) > 0) {
+			putInfo("Nao coverge, intervalo mal definido");
+			return  null;
+		}
+		int i;
+		putInfo("interação|      a       |      b       |      x1      |      ea     |     f(x1)   |");
+		for (i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = b + (fu * (a - b)) / (fu - fl);
 			fx = funcao.f(x1);
@@ -106,28 +138,31 @@ public class Metodos {
 				fu = fx;
 			}
 			new_line();
-			putInfo("interação " + i);
-			putInfo(" a= " + a);
-			putInfo(" b= " + b);
-			putInfo(" x1= " + x1);
-			putInfo(" ea " + ea);
-			putInfo(" f(x1)= " + funcao.f(x1));
-			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
+			putInfo(i);
+			putInfo(a);
+			putInfo(b);
+			putInfo(x1);
+			putInfo(ea);
+			putInfo(funcao.f(x1));
+			if (Math.abs(funcao.f(x1)) < tol) {
 				break;
 			}
 		}
 
-		return x1;
+		return new Resposta(x1, ea, i);
 	}
 
-	public double ponto_fixo(double xa) {
+	public Resposta ponto_fixo(double xa) {
 		double x1, x0, ea;
+		int i;
 		x1 = xa;
 		ea = 100;
 		new_line();
 		new_line();
 		putInfo("Ponto fixo");
-		for (int i = 0; i < max_interacao; i++) {
+		new_line();
+		putInfo("interação|      x0      |      x1      |      ea      |      f(x1)   |");
+		for (i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = funcao.g(x0);
 			if (x1 != 0) {
@@ -135,27 +170,31 @@ public class Metodos {
 			}
 
 			new_line();
-			putInfo("interação " + i);
-			putInfo(" x0= " + x0);
-			putInfo(" x1= " + x1);
-			putInfo(" ea " + ea);
-			putInfo(" f(x1)= " + funcao.f(x1));
-			//quase certeza que ea <= tol ou while(ea>tol), da no mesmo, nao funciona
-			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
+			putInfo(i);
+			putInfo(x0);
+			putInfo(x1);
+			putInfo(ea);
+			putInfo(funcao.f(x1));
+			// quase certeza que ea <= tol ou while(ea>tol), da no mesmo, nao
+			// funciona
+			if (Math.abs(funcao.f(x1)) < tol) {
 				break;
 			}
 		}
-		return x1;
+		return new Resposta(x1, ea, i);
 	}
 
-	public double nweton_raphson(double xa) {
+	public Resposta nweton_raphson(double xa) {
 		double ea = 100;
 		double x0, x1;
 		x1 = xa;
 		new_line();
 		new_line();
 		putInfo("Nweton raphson");
-		for (int i = 0; i < max_interacao; i++) {
+		new_line();
+		int i;
+		putInfo("interação|      x0      |      x1      |      ea      |      f(x1)   |");
+		for (i = 0; i < max_interacao; i++) {
 			x0 = x1;
 			x1 = x0 - funcao.f(x0) / funcao.fl(x0);
 			if (x1 != 0) {
@@ -163,51 +202,58 @@ public class Metodos {
 			}
 
 			new_line();
-			putInfo("interação " + i);
-			putInfo(" x0= " + x0);
-			putInfo(" x1= " + x1);
-			putInfo(" ea " + ea);
-			putInfo(" f(x1)= " + funcao.f(x1));
-			if (ea <= tol || Math.abs(funcao.f(x1))< tol) {
+			putInfo(i);
+			putInfo(x0);
+			putInfo(x1);
+			putInfo(ea);
+			putInfo(funcao.f(x1));
+			if (Math.abs(funcao.f(x1)) < tol) {
 				break;
 			}
 		}
-		return x1;
+		return new Resposta(x1, ea, i);
 	}
 
-	public double secante(double xa, double xb) {
+	public Resposta secante(double xa, double xb) {
 		double x1, x0, fa, fb;
 		double ea = 100;
 		x1 = xa;
 		new_line();
 		new_line();
 		putInfo("Secante");
-		for (int i = 0; i < max_interacao; i++) {
+		new_line();
+		if (funcao.f(xa) * funcao.f(xb) > 0) {
+			putInfo("Nao coverge, intervalo mal definido");
+			return  null;
+		}
+		int i;
+		putInfo("interação|      x0      |      x1      |      xa      |      xb      |      ea      |      f(x1)   |");
+		for (i = 0; i < max_interacao; i++) {
 			fa = funcao.f(xa);
 			fb = funcao.f(xb);
-			//nao tem x0
+			// nao tem x0
 			x0 = x1;
-			//rescrever a funcao funcionou
-			x1 = xb - (fb*(xb-xa)/(fb-fa));
-			if(x1 != 0){
-				ea = Math.abs((x1-x0)/x1)*100;
+			// rescrever a funcao funcionou
+			x1 = xb - (fb * (xb - xa) / (fb - fa));
+			if (x1 != 0) {
+				ea = Math.abs((x1 - x0) / x1) * 100;
 			}
-			
+
 			new_line();
-			putInfo("interação " + i);
-			putInfo(" x0= " + x0);
-			putInfo(" x1= " + x1);
-			putInfo(" xa= " + xa);
-			putInfo(" xb= " + xb);
-			putInfo(" ea " + ea);
-			putInfo(" f(x1)= " + funcao.f(x1));
-			if(ea <= tol || Math.abs(funcao.f(x1))< tol){
+			putInfo(i);
+			putInfo(x0);
+			putInfo(x1);
+			putInfo(xa);
+			putInfo(xb);
+			putInfo(ea);
+			putInfo(funcao.f(x1));
+			if (Math.abs(funcao.f(x1)) < tol) {
 				break;
 			}
 			xb = xa;
 			xa = x1;
 		}
-		return x1;
+		return new Resposta(x1, ea, i);
 	}
 
 }
