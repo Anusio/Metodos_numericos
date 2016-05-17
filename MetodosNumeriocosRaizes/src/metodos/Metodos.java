@@ -70,7 +70,7 @@ public class Metodos {
 		new_line();
 		if (funcao.f(a) * funcao.f(b) > 0) {
 			putInfo("Nao coverge, intervalo mal definido");
-			return  null;
+			return null;
 		}
 		int i;
 		putInfo("interação|      a       |      b       |      x1      |      ea     |     f(x1)   |");
@@ -86,7 +86,7 @@ public class Metodos {
 				a = x1;
 			} else {
 				putInfo("Erro Nao coverge a=" + a + " b=" + b);
-				return  null;
+				return null;
 			}
 			new_line();
 			putInfo(i);
@@ -104,7 +104,7 @@ public class Metodos {
 	}
 
 	public Resposta falsa_posicao(double a, double b) {
-		double x0, x1, fl, fu, fx, ea;
+		double x0, x1, fl, fu, fx, ea, fa, fb;
 		ea = 100;
 		fl = funcao.f(a);
 		fu = funcao.f(b);
@@ -119,18 +119,21 @@ public class Metodos {
 		new_line();
 		if (funcao.f(a) * funcao.f(b) > 0) {
 			putInfo("Nao coverge, intervalo mal definido");
-			return  null;
+			return null;
 		}
 		int i;
 		putInfo("interação|      a       |      b       |      x1      |      ea     |     f(x1)   |");
 		for (i = 0; i < max_interacao; i++) {
 			x0 = x1;
-			x1 = b + (fu * (a - b)) / (fu - fl);
+			// x1 = b + (fu * (a - b)) / (fu - fl);
+			fa = funcao.f(a);
+			fb = funcao.f(b);
+			x1 = (a * fb - b * fa) / (fb - fa);
 			fx = funcao.f(x1);
 			if (x1 != 0) {
 				ea = Math.abs((x1 - x0) / x1) * 100;
 			}
-			if (fl < fu) {
+			if (fl * fx > 0) {
 				a = x1;
 				fl = fx;
 			} else {
@@ -224,7 +227,7 @@ public class Metodos {
 		new_line();
 		if (funcao.f(xa) * funcao.f(xb) > 0) {
 			putInfo("Nao coverge, intervalo mal definido");
-			return  null;
+			return null;
 		}
 		int i;
 		putInfo("interação|      x0      |      x1      |      xa      |      xb      |      ea      |      f(x1)   |");
